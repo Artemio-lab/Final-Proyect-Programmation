@@ -16,10 +16,13 @@ int movimiento_dama(int turno, int coordenadas_fichaX, int coordenadas_fichaY, i
 void imprimir_tablero(int tablero[8][8]);
 void imprimir_linea();
 void cambiar_color(int color);
+void kernel_capturas(int x, int y, int kernel[3][3], int tablero[8][8], int turno);
+void imprimir_kernel(int kernel[3][3]);
+void capturar_ficha(int x, int y, int dx, int dy, int tablero[8][8]);
 
 int main() {
   int opcion;
-    
+
   do{
     printf("\n===== Damas Inglesas =====\n");
     printf("\n1. Jugar");
@@ -28,28 +31,28 @@ int main() {
     printf("\n4. Salir\n");
     scanf("%d", &opcion);
     while(getchar()!='\n');
-    
+
     switch (opcion){
       case 1:
         Juego();
       break;
-    
+
       case 2:
         Creditos();
       break;
-    
+
       case 3:
         HistorialV();
       break;
-    
+
       case 4:
         printf("\nFin del programa!!");
       break;
-    
+
       default:
         printf("\nOpcion invalida\n");
   }
-    
+
   }while(opcion!=4);
 }
 
@@ -83,6 +86,28 @@ void Juego(){
             scanf("%d", &coordenadas_fichaX);
             printf("Coordenada ficha 2: ");
             scanf("%d", &coordenadas_fichaY);
+            // Aqui se crea un kernel el cual servira para las capturas más tarde
+            int kernel[3][3];
+            kernel_capturas(coordenadas_fichaX, coordenadas_fichaY, kernel, tablero, turno);
+            imprimir_kernel(kernel);
+            // Verificamos posibles movimientos válidos o capturas
+            int movimientos_validos = 0;
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    // checamos si se encuentra una ficha rival
+                    if (kernel[i + 1][j + 1] == 1) { // 1 = ficha rival, 2 = ficha aliada, X = invalido, 0 = no hay nada
+                        int dy = i * 2; // Movimiento en X para capturar
+                        int dx = j * 2; // Movimiento en Y para capturar
+                        int posy = coordenadas_fichaX + dy; // posición en Y tras la captura
+                        int posx = coordenadas_fichaY + dx; // Posición en X tras capturar
+
+                        // Validar que la posición resultante esté dentro del tablero y sea válida
+                        if (posy >= 0 && posy < 8 && posx >= 0 && posx < 8 && tablero[posy][posx] == 0) {
+                            printf("Captura disponible en (%d, %d).\n", posy, posx);
+                        }
+                    }
+                }
+            }
             printf("Cordenada mover 1: ");
             scanf("%d", &coordenadas_moverX);
             printf("Cordenada mover 1: ");
@@ -138,6 +163,7 @@ int movimiento(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int co
     }
 }
 int movimiento_peon(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]){
+    
     if((turno%2) !=0){
         if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10 && tablero[coordenadas_moverX][coordenadas_moverY] !=10){
             tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
@@ -340,4 +366,67 @@ void cambiar_color(int color){
     printf("\033[0;37m");
     break;
 }
+}
+
+
+void kernel_capturas(int x, int y, int kernel[3][3], int tablero[8][8], int turno) {
+    int rival;
+    int aliado;
+    if (turno % 2 != 0) {
+        rival = 20;
+        aliado = 10;
+    } else {
+        rival = 10;
+        aliado = 20;
+    }
+
+    for (int i = -1; i <= 1; i++) {
+        for (int j = -1; j <= 1; j++) {
+            int nx = x + i;
+            int ny = y + j;
+
+            if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8) {
+                if (tablero[nx][ny] == 0) {
+                    kernel[i + 1][j + 1] = 0; // Espacio vacío
+                } else if (tablero[nx][ny] == rival) {
+                    kernel[i + 1][j + 1] = 1; // Ficha rival
+                } else if (tablero[nx][ny] == aliado) {
+                    kernel[i + 1][j + 1] = 2; // Ficha aliada
+                }
+            } else {
+                kernel[i + 1][j + 1] = -1; // Fuera de límites
+            }
+        }
+    }
+}
+void imprimir_kernel(int kernel[3][3]){
+    printf("\nKernel 3x3:\n");
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (kernel[i][j] == -1) {
+                printf(" X "); // Fuera de límites
+            } else {
+                printf(" %d ", kernel[i][j]);
+            }
+        }
+        printf("\n");
+    }
+}
+void capturar_ficha(int x, int y, int dx, int dy, int tablero[8][8]) {
+    int rivalX = x + dx / 2; // Coordenada de la ficha rival (mitad del salto)
+    int rivalY = y + dy / 2;
+    int destinoX = x + dx; // Coordenada final después del salto
+    int destinoY = y + dy;
+
+    // Verificar que el destino esté dentro de los límites
+    if (destinoX >= 0 && destinoX < 8 && destinoY >= 0 && destinoY < 8) {
+        // Mover la ficha del jugador al destino
+        tablero[destinoX][destinoY] = tablero[x][y];
+        tablero[x][y] = 0; // Vaciar la casilla original
+        tablero[rivalX][rivalY] = 0; // Eliminar la ficha rival
+
+        printf("Captura realizada: (%d, %d) -> (%d, %d)\n", x, y, destinoX, destinoY);
+    } else {
+        printf("Movimiento fuera de los límites. Captura no válida.\n");
+    }
 }
