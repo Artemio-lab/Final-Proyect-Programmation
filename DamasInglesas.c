@@ -9,6 +9,7 @@ void Juego();
 void Creditos();
 void HistorialV();
 void iniciar_tablero(int tablero[8][8]);
+int verificacion_casilla_negra(int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY);
 int movimiento(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]);
 int movimiento_peon(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]);
 int movimiento_dama(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]);
@@ -64,29 +65,33 @@ void Juego(){
   iniciar_tablero(tablero);
   do{
     do{
+        bandera=0;
     if((turno%2)!=0){
         printf("Turno de %s\n", jugador1);
     }else{
         printf("Turno de %s\n", jugador2);
     }
         imprimir_tablero(tablero);
-        //for(int i=0;i<8;i++){
-        //for(int l=0;l<8;l++){
-        //    printf("%d  ", tablero[i][l]);
-        //}
+        for(int i=0;i<8;i++){
+        for(int l=0;l<8;l++){
+            printf("%d  ", tablero[i][l]);
+        }
         printf("\n");
     }
-        printf("Coordenada ficha 1: ");
-        scanf("%d", &coordenadas_fichaX);
-        printf("Coordenada ficha 2: ");
-        scanf("%d", &coordenadas_fichaY);
-        printf("Cordenada mover 1: ");
-        scanf("%d", &coordenadas_moverX);
-        printf("Cordenada mover 1: ");
-        scanf("%d", &coordenadas_moverY);
+        do{
+            printf("Coordenada ficha 1: ");
+            scanf("%d", &coordenadas_fichaX);
+            printf("Coordenada ficha 2: ");
+            scanf("%d", &coordenadas_fichaY);
+            printf("Cordenada mover 1: ");
+            scanf("%d", &coordenadas_moverX);
+            printf("Cordenada mover 1: ");
+            scanf("%d", &coordenadas_moverY);
+            bandera=verificacion_casilla_negra(coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY);
+        }while(bandera==0);
         bandera=movimiento(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
         if(bandera==0){
-            printf("No es una de tus fichas\n");
+            printf("No es una de tus fichas o la casilla destino esta ocupada\n");
         }
     }while(bandera==0);
     turno++;
@@ -109,6 +114,14 @@ void iniciar_tablero(int tablero[8][8]){
         bandera1++;
     }
 }
+int verificacion_casilla_negra(int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY){
+    if((coordenadas_fichaX%2)==0 && (coordenadas_fichaY%2)==0 || (coordenadas_moverX%2)==0 && (coordenadas_moverY%2)==0){
+        printf("No se puden casillas blancas\n");
+        return 0;
+    }else{
+        return 1;
+    }
+}
 int movimiento(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]){
     int bandera1, bandera2;
     if(tablero[coordenadas_fichaX][coordenadas_fichaY] == 10 || tablero[coordenadas_fichaX][coordenadas_fichaY] == 20){
@@ -126,7 +139,7 @@ int movimiento(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int co
 }
 int movimiento_peon(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]){
     if((turno%2) !=0){
-        if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10){
+        if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10 && tablero[coordenadas_moverX][coordenadas_moverY] !=10){
             tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
             tablero[coordenadas_moverX][coordenadas_moverY]=10;
             return 1;
@@ -134,7 +147,7 @@ int movimiento_peon(int turno, int coordenadas_fichaX, int coordenadas_fichaY, i
             return 0;
         }
     }else{
-        if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20){
+        if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20 && tablero[coordenadas_moverX][coordenadas_moverY] !=20){
             tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
             tablero[coordenadas_moverX][coordenadas_moverY]=20;
             return 1;
@@ -145,7 +158,7 @@ int movimiento_peon(int turno, int coordenadas_fichaX, int coordenadas_fichaY, i
 }
 int movimiento_dama(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]){
     if((turno%2) !=0){
-        if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11){
+        if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11 && tablero[coordenadas_moverX][coordenadas_moverY] !=11){
             tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
             tablero[coordenadas_moverX][coordenadas_moverY]=11;
             return 1;
@@ -153,7 +166,7 @@ int movimiento_dama(int turno, int coordenadas_fichaX, int coordenadas_fichaY, i
             return 0;
         }
     }else{
-        if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21){
+        if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21 && tablero[coordenadas_moverX][coordenadas_moverY] !=21){
             tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
             tablero[coordenadas_moverX][coordenadas_moverY]=21;
             return 1;
