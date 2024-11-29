@@ -70,8 +70,8 @@ int main() {
 
 void Juego(){
   printf("\nJugar\n");
-  int turno=1, resultado=0, bandera, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero[8][8]={0};
-  int coordenada_validaX, coordenada_validaY, coordenada_mover_validaX, coordenada_mover_validaY, contadorFichasX=12, contadorFichasY=12;;
+  int turno=1, resultado=0, bandera, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero[8][8]={0}, bandera2;
+  int contadorFichasX=12, contadorFichasY=12;;
   char jugador1[250], jugador2[250];
   resumen_juego_t ganadores;
   
@@ -103,15 +103,15 @@ void Juego(){
         printf("Turno de %s\n", jugador2);
     }
         imprimir_tablero(tablero);
-        for(int i=0;i<8;i++){
-        for(int l=0;l<8;l++){
-            printf("%d  ", tablero[i][l]);
-        }
-        printf("\n");
-    }
+        //for(int i=0;i<8;i++){
+        //for(int l=0;l<8;l++){
+        //    printf("%d  ", tablero[i][l]);
+        //}
+        //printf("\n");
+        //}
         do{
-            //fichas posicion
-             do{
+            int coordenada_validaX, coordenada_validaY, coordenada_mover_validaX, coordenada_mover_validaY;
+            do{
                 do{
                     coordenada_validaX=-1;
                     printf("\nIngresa la coordenada 1 [DE 0 A 7]: ");
@@ -124,11 +124,11 @@ void Juego(){
                 
                 coordenadas_fichaX=coordenada_validaX;
                 
-                if(coordenadas_fichaX <=  0 || coordenadas_fichaX >= 7){
+                if(coordenadas_fichaX <  0 || coordenadas_fichaX > 7){
                     printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
                 }    
             }while(coordenadas_fichaX < 0 || coordenadas_fichaX > 7);
-            
+
             do{
                 do{
                     coordenada_validaY=-1;
@@ -140,14 +140,14 @@ void Juego(){
                         printf("\nCLAVE INVALIDA!!\n");
                     }
                 }while(coordenada_validaY<0);
-            
+                
                 coordenadas_fichaY=coordenada_validaY;
                 
-                if(coordenadas_fichaY <= 0 || coordenadas_fichaY >= 7){
-                printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
-            }
-        }while(coordenadas_fichaY <= 0 || coordenadas_fichaY >= 7);
-
+                if(coordenadas_fichaY < 0 || coordenadas_fichaY > 7){
+                    printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                }
+            }while(coordenadas_fichaY < 0 || coordenadas_fichaY > 7);
+            
             //fichas mover
             do{
                 do{
@@ -155,17 +155,18 @@ void Juego(){
                     printf("\nIngresa la coordenada a mover 1 [DE 0 A 7]: ");
                     scanf("%d",&coordenada_mover_validaX);
                     while (getchar() != '\n'); 
-                
+                    
                     if(coordenada_mover_validaX==-1){
                         printf("\nCLAVE INVALIDA!!\n");
                     }
                 }while(coordenada_mover_validaX<0);
-            
+                
                 coordenadas_moverX=coordenada_mover_validaX;
-                if(coordenadas_moverX <= 0 || coordenadas_moverX >= 7){
+                
+                if(coordenadas_moverX < 0 || coordenadas_moverX > 7){
                     printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
                 }
-            }while(coordenadas_moverX <= 0 || coordenadas_moverX >= 7);
+            }while(coordenadas_moverX < 0 || coordenadas_moverX > 7);
             
             do{
                 do{
@@ -173,18 +174,19 @@ void Juego(){
                     printf("\nIngresa la coordenada a mover 2 [DE 0 A 7]: ");
                     scanf("%d",&coordenada_mover_validaY);
                     while (getchar() != '\n'); 
-                
+                    
                     if(coordenada_mover_validaY==-1){
                         printf("\nCLAVE INVALIDA!!\n");
                     }
                 }while(coordenada_mover_validaY<0);
                 
                 coordenadas_moverY=coordenada_mover_validaY;
-                if(coordenadas_moverY <= 0 || coordenadas_moverY >= 7){
+                
+                if(coordenadas_moverY < 0 || coordenadas_moverY > 7){
                     printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
                 }
-        }while(coordenadas_moverY <= 0 || coordenadas_moverY >= 7);
-
+            }while(coordenadas_moverY < 0 || coordenadas_moverY > 7);
+            
             bandera=verificacion_casilla_negra(coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY);
         }while(bandera==0);
         bandera=movimiento(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
@@ -194,32 +196,44 @@ void Juego(){
     }while(bandera==0);
     turno++;
     crear_dama(tablero);
-  }while(resultado ==0);
+    bandera2=verificar_ganador(tablero);
+  }while(bandera2==0);
+
+
+  //CONTAR FICHAS
+  int fichas_p1 = 0, fichas_p2 = 0;
+
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (tablero[i][j] == 10 || tablero[i][j]==11){
+                fichas_p1++;
+            }
+            if (tablero[i][j] == 20 || tablero[i][j]==21){
+                fichas_p2++;
+            }
+        }
+    }
   
   int ganador = verificar_ganador(tablero);
   FILE *archivo;
   archivo = fopen("historial.bin", "ab");
   
-  if (ganador == 1) {
+  if(ganador == 1){
     printf("\n¡Felicidades %s! Ganaste con fichas rojas!!\n", jugador1);
     strcpy(ganadores.nombre,jugador1);
     strcpy(ganadores.colorFicha,"Rojo");
-    ganadores.fichasRestantes = contadorFichasX;
+    ganadores.fichasRestantes = fichas_p1;
 
     fwrite(&ganadores, sizeof(resumen_juego_t), 1, archivo);
     fclose(archivo);
-  }
-  else if(ganador==2){
+  }else if(ganador==2){
     printf("\n¡Felicidades %s! Ganaste con fichas azules!!\n", jugador2);
     strcpy(ganadores.nombre,jugador2);
     strcpy(ganadores.colorFicha,"Azul");
-    ganadores.fichasRestantes = contadorFichasY;
+    ganadores.fichasRestantes = fichas_p2;
 
     fwrite(&ganadores, sizeof(resumen_juego_t), 1, archivo);
     fclose(archivo);
-  }
-  else{
-    printf("\nEMPATE!!");
   }
 }
 
@@ -281,18 +295,86 @@ int movimiento_peon(int turno, int coordenadas_fichaX, int coordenadas_fichaY, i
             return 1;
         }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10 && tablero[coordenadas_moverX][coordenadas_moverY] ==20 || tablero[coordenadas_moverX][coordenadas_moverY]==21){
             bandera=funcion_comer_peon(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
-            if(bandera==1){
+            if(bandera==1){            
                 do{
                     imprimir_tablero(tablero);
-                    do{
-                        printf("Coordenada ficha 1: ");
-                        scanf("%d", &coordenadas_fichaX);
-                        printf("Coordenada ficha 2: ");
-                        scanf("%d", &coordenadas_fichaY);
-                        printf("Cordenada mover 1: ");
-                        scanf("%d", &coordenadas_moverX);
-                        printf("Cordenada mover 1: ");
-                        scanf("%d", &coordenadas_moverY);
+                    do{                      
+            int coordenada_validaX, coordenada_validaY, coordenada_mover_validaX, coordenada_mover_validaY;
+
+                        do{
+                do{
+                    coordenada_validaX=-1;
+                    printf("\nIngresa la coordenada 1 [DE 0 A 7]: ");
+                    scanf("%d",&coordenada_validaX);
+                    while (getchar() != '\n');
+                    if(coordenada_validaX==-1){
+                        printf("\nCLAVE INVALIDA!!\n");
+                    }
+                }while(coordenada_validaX<0);
+                
+                coordenadas_fichaX=coordenada_validaX;
+                
+                if(coordenadas_fichaX <  0 || coordenadas_fichaX > 7){
+                    printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                }    
+            }while(coordenadas_fichaX < 0 || coordenadas_fichaX > 7);
+
+            do{
+                do{
+                    coordenada_validaY=-1;
+                    printf("\nIngresa la coordenada 2 [DE 0 A 7]: ");
+                    scanf("%d",&coordenada_validaY);
+                    while (getchar() != '\n');
+                    
+                    if(coordenada_validaY==-1){
+                        printf("\nCLAVE INVALIDA!!\n");
+                    }
+                }while(coordenada_validaY<0);
+                
+                coordenadas_fichaY=coordenada_validaY;
+                
+                if(coordenadas_fichaY < 0 || coordenadas_fichaY > 7){
+                    printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                }
+            }while(coordenadas_fichaY < 0 || coordenadas_fichaY > 7);
+                        //fichas mover
+                        do{
+                            do{
+                                coordenada_mover_validaX=-1;
+                                printf("\nIngresa la coordenada a mover 1 [DE 0 A 7]: ");
+                                scanf("%d",&coordenada_mover_validaX);
+                                while (getchar() != '\n'); 
+                                if(coordenada_mover_validaX==-1){
+                                    printf("\nCLAVE INVALIDA!!\n");
+                                }
+                            }while(coordenada_mover_validaX<0);
+                            
+                            coordenadas_moverX=coordenada_mover_validaX;
+                            
+                            if(coordenadas_moverX < 0 || coordenadas_moverX > 7){
+                                printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                            }
+                        }while(coordenadas_moverX < 0 || coordenadas_moverX > 7);
+                        
+                        do{
+                            do{
+                                coordenada_mover_validaY=-1;
+                                printf("\nIngresa la coordenada a mover 2 [DE 0 A 7]: ");
+                                scanf("%d",&coordenada_mover_validaY);
+                                while (getchar() != '\n'); 
+                                
+                                if(coordenada_mover_validaY==-1){
+                                    printf("\nCLAVE INVALIDA!!\n");
+                                }
+                            }while(coordenada_mover_validaY<0);
+                            
+                            coordenadas_moverY=coordenada_mover_validaY;
+                            
+                            if(coordenadas_moverY < 0 || coordenadas_moverY > 7){
+                                printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                            }
+                        }while(coordenadas_moverY < 0 || coordenadas_moverY > 7);
+
                         bandera=verificacion_casilla_negra(coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY);
                         bandera2=verificacion_movimiento_concatenar(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
                     }while(bandera==0 || bandera2 ==0);
@@ -311,19 +393,87 @@ int movimiento_peon(int turno, int coordenadas_fichaX, int coordenadas_fichaY, i
             tablero[coordenadas_moverX][coordenadas_moverY]=20;
             return 1;
         }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20 && tablero[coordenadas_moverX][coordenadas_moverY] ==10 || tablero[coordenadas_moverX][coordenadas_moverY]==11){
-            bandera=funcion_comer_peon(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+            bandera=funcion_comer_peon(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);    
             if(bandera==1){
                 do{
                     imprimir_tablero(tablero);
-                    do{
-                        printf("Coordenada ficha 1: ");
-                        scanf("%d", &coordenadas_fichaX);
-                        printf("Coordenada ficha 2: ");
-                        scanf("%d", &coordenadas_fichaY);
-                        printf("Cordenada mover 1: ");
-                        scanf("%d", &coordenadas_moverX);
-                        printf("Cordenada mover 1: ");
-                        scanf("%d", &coordenadas_moverY);
+                    do{  
+                        int coordenada_validaX, coordenada_validaY, coordenada_mover_validaX, coordenada_mover_validaY;
+                       do{
+                do{
+                    coordenada_validaX=-1;
+                    printf("\nIngresa la coordenada 1 [DE 0 A 7]: ");
+                    scanf("%d",&coordenada_validaX);
+                    while (getchar() != '\n');
+                    if(coordenada_validaX==-1){
+                        printf("\nCLAVE INVALIDA!!\n");
+                    }
+                }while(coordenada_validaX<0);
+                
+                coordenadas_fichaX=coordenada_validaX;
+                
+                if(coordenadas_fichaX <  0 || coordenadas_fichaX > 7){
+                    printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                }    
+            }while(coordenadas_fichaX < 0 || coordenadas_fichaX > 7);
+
+            do{
+                do{
+                    coordenada_validaY=-1;
+                    printf("\nIngresa la coordenada 2 [DE 0 A 7]: ");
+                    scanf("%d",&coordenada_validaY);
+                    while (getchar() != '\n');
+                    
+                    if(coordenada_validaY==-1){
+                        printf("\nCLAVE INVALIDA!!\n");
+                    }
+                }while(coordenada_validaY<0);
+                
+                coordenadas_fichaY=coordenada_validaY;
+                
+                if(coordenadas_fichaY < 0 || coordenadas_fichaY > 7){
+                    printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                }
+            }while(coordenadas_fichaY < 0 || coordenadas_fichaY > 7);
+
+                        //fichas mover
+                        do{
+                            do{
+                                coordenada_mover_validaX=-1;
+                                printf("\nIngresa la coordenada a mover 1 [DE 0 A 7]: ");
+                                scanf("%d",&coordenada_mover_validaX);
+                                while (getchar() != '\n'); 
+                                if(coordenada_mover_validaX==-1){
+                                    printf("\nCLAVE INVALIDA!!\n");
+                                }
+                            }while(coordenada_mover_validaX<0);
+                            
+                            coordenadas_moverX=coordenada_mover_validaX;
+                            
+                            if(coordenadas_moverX < 0 || coordenadas_moverX > 7){
+                                printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                            }
+                        }while(coordenadas_moverX < 0 || coordenadas_moverX > 7);
+                        
+                        do{
+                            do{
+                                coordenada_mover_validaY=-1;
+                                printf("\nIngresa la coordenada a mover 2 [DE 0 A 7]: ");
+                                scanf("%d",&coordenada_mover_validaY);
+                                while (getchar() != '\n'); 
+                                
+                                if(coordenada_mover_validaY==-1){
+                                    printf("\nCLAVE INVALIDA!!\n");
+                                }
+                            }while(coordenada_mover_validaY<0);
+                            
+                            coordenadas_moverY=coordenada_mover_validaY;
+                            
+                            if(coordenadas_moverY < 0 || coordenadas_moverY > 7){
+                                printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                            }
+                        }while(coordenadas_moverY < 0 || coordenadas_moverY > 7);
+
                         bandera=verificacion_casilla_negra(coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY);
                         bandera2=verificacion_movimiento_concatenar(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
                     }while(bandera==0 || bandera2 ==0);
@@ -482,79 +632,103 @@ int verificacion_movimiento_concatenar(int turno, int coordenadas_fichaX, int co
 }
 
 int concatenar(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]){
+    int bandera;
     if((coordenadas_fichaX-1) == coordenadas_moverX && (coordenadas_fichaY -1)==coordenadas_moverY){
-            if(tablero[coordenadas_moverX-1][coordenadas_moverY-1]==0 && (coordenadas_moverX-1)>=0 && (coordenadas_moverY-1)>=0){
-                if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10){
+            if(tablero[coordenadas_moverX-1][coordenadas_moverY-1]==0 && ((coordenadas_moverX-1)>=0 && (coordenadas_moverY-1)>=0) && tablero[coordenadas_moverX][coordenadas_moverY]!=0){
+                if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10 && (turno%2)!=0 && tablero[coordenadas_moverX][coordenadas_moverY]!=11 && tablero[coordenadas_moverX][coordenadas_moverY]!=10){
                     tablero[coordenadas_moverX-1][coordenadas_moverY-1]=10;                    
-                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11){
+                    bandera=1;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11 && (turno%2)!=0 && tablero[coordenadas_moverX][coordenadas_moverY]!=11 && tablero[coordenadas_moverX][coordenadas_moverY]!=10){
                     tablero[coordenadas_moverX-1][coordenadas_moverY-1]=11;
-                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20){
+                    bandera=1;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20 && (turno%2)==0 && tablero[coordenadas_moverX][coordenadas_moverY]!=21 && tablero[coordenadas_moverX][coordenadas_moverY]!=20){
                     tablero[coordenadas_moverX-1][coordenadas_moverY-1]=20;
-                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21){
+                    bandera=1;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21 && (turno%2)==0){
                     tablero[coordenadas_moverX-1][coordenadas_moverY-1]=21;
+                    bandera=1;
                 }else{
                     return 0;
                 }
-                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
-                tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                if(bandera ==1){
+                    tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                    tablero[coordenadas_moverX][coordenadas_moverY]=0;
                 return 1;
+                }                
             }else{
                 return 0;
             }
         }else if((coordenadas_fichaX-1) == coordenadas_moverX && (coordenadas_fichaY +1)==coordenadas_moverY){
-            if(tablero[coordenadas_moverX-1][coordenadas_moverY+1]==0 && (coordenadas_moverX-1)>=0 && (coordenadas_moverY+1)<=7){
-                if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10){
+            if(tablero[coordenadas_moverX-1][coordenadas_moverY+1]==0 && ((coordenadas_moverX-1)>=0 && (coordenadas_moverY+1)<=7) && tablero[coordenadas_moverX][coordenadas_moverY]!=0){
+                if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10 && (turno%2)!=0 && tablero[coordenadas_moverX][coordenadas_moverY]!=11 && tablero[coordenadas_moverX][coordenadas_moverY]!=10){
                     tablero[coordenadas_moverX-1][coordenadas_moverY+1]=10;
-                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11){
+                    bandera=1;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11 && (turno%2)!=0 && tablero[coordenadas_moverX][coordenadas_moverY]!=11 && tablero[coordenadas_moverX][coordenadas_moverY]!=10){
                     tablero[coordenadas_moverX-1][coordenadas_moverY+1]=11;
-                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20){
+                    bandera=1;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20 && (turno%2)==0 && tablero[coordenadas_moverX][coordenadas_moverY]!=21 && tablero[coordenadas_moverX][coordenadas_moverY]!=20){
                     tablero[coordenadas_moverX-1][coordenadas_moverY+1]=20;
-                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21){
+                    bandera=1;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21 && (turno%2)==0 && tablero[coordenadas_moverX][coordenadas_moverY]!=21 && tablero[coordenadas_moverX][coordenadas_moverY]!=20){
                     tablero[coordenadas_moverX-1][coordenadas_moverY+1]=21;
+                    bandera=1;
                 }else{
                     return 0;
                 }
-                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
-                tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                if(bandera ==1){
+                    tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                    tablero[coordenadas_moverX][coordenadas_moverY]=0;
                 return 1;
+                }
             }else{
                 return 0;
             }
         }else if((coordenadas_fichaX+1) == coordenadas_moverX && (coordenadas_fichaY -1)==coordenadas_moverY){
-            if(tablero[coordenadas_moverX+1][coordenadas_moverY-1]==0 && (coordenadas_moverX+1)<=7 && (coordenadas_moverY-1)>=0){
-                if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10){
+            if(tablero[coordenadas_moverX+1][coordenadas_moverY-1]==0 && ((coordenadas_moverX+1)<=7 && (coordenadas_moverY-1)>=0) && tablero[coordenadas_moverX][coordenadas_moverY]!=0){
+                if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10 && (turno%2)!=0 && tablero[coordenadas_moverX][coordenadas_moverY]!=11 && tablero[coordenadas_moverX][coordenadas_moverY]!=10){
                     tablero[coordenadas_moverX+1][coordenadas_moverY-1]=10;
-                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11){
+                    bandera=1;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11 && (turno%2)!=0 && tablero[coordenadas_moverX][coordenadas_moverY]!=11 && tablero[coordenadas_moverX][coordenadas_moverY]!=10){
                     tablero[coordenadas_moverX+1][coordenadas_moverY-1]=11;
-                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20){
+                    bandera=1;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20 && (turno%2)==0 && tablero[coordenadas_moverX][coordenadas_moverY]!=21 && tablero[coordenadas_moverX][coordenadas_moverY]!=20){
                     tablero[coordenadas_moverX+1][coordenadas_moverY-1]=20;
-                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21){
+                    bandera=1;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21 && (turno%2)==0 && tablero[coordenadas_moverX][coordenadas_moverY]!=21 && tablero[coordenadas_moverX][coordenadas_moverY]!=20){
                     tablero[coordenadas_moverX+1][coordenadas_moverY-1]=21;
+                    bandera=1;
                 }else{
                     return 0;
                 }
-                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
-                tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                if(bandera ==1){
+                    tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                    tablero[coordenadas_moverX][coordenadas_moverY]=0;
                 return 1;
+                }
             }else{
                 return 0;
             }
         }else if((coordenadas_fichaX+1) == coordenadas_moverX && (coordenadas_fichaY +1)==coordenadas_moverY){
-            if(tablero[coordenadas_moverX+1][coordenadas_moverY+1]==0 && (coordenadas_moverX+1)<=7 && (coordenadas_moverY+1)<=7){
-                if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10){
+            if(tablero[coordenadas_moverX+1][coordenadas_moverY+1]==0 && ((coordenadas_moverX+1)<=7 && (coordenadas_moverY+1)<=7) && tablero[coordenadas_moverX][coordenadas_moverY]!=0){
+                if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10 && (turno%2)!=0 && tablero[coordenadas_moverX][coordenadas_moverY]!=11 && tablero[coordenadas_moverX][coordenadas_moverY]!=10){
                     tablero[coordenadas_moverX+1][coordenadas_moverY+1]=10;
-                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11){
+                    bandera=1;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11 && (turno%2)!=0 && tablero[coordenadas_moverX][coordenadas_moverY]!=11 && tablero[coordenadas_moverX][coordenadas_moverY]!=10){
                     tablero[coordenadas_moverX+1][coordenadas_moverY+1]=11;
-                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20){
+                    bandera=1;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20 && (turno%2)==0 && tablero[coordenadas_moverX][coordenadas_moverY]!=21 && tablero[coordenadas_moverX][coordenadas_moverY]!=20){
                     tablero[coordenadas_moverX+1][coordenadas_moverY+1]=20;
-                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21){
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21 && (turno%2)==0 && tablero[coordenadas_moverX][coordenadas_moverY]!=21 && tablero[coordenadas_moverX][coordenadas_moverY]!=20){
                     tablero[coordenadas_moverX+1][coordenadas_moverY+1]=21;
+                    bandera=1;
                 }else{
                     return 0;
                 }
-                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
-                tablero[coordenadas_moverX][coordenadas_moverY]=0; 
-                return 1;               
+                if(bandera ==1){
+                    tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                    tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                return 1;
+                }             
             }else{
                 return 0;
             }
@@ -571,18 +745,93 @@ int movimiento_dama(int turno, int coordenadas_fichaX, int coordenadas_fichaY, i
             return 1;
         }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11 && tablero[coordenadas_moverX][coordenadas_moverY] ==20 || tablero[coordenadas_moverX][coordenadas_moverY]==21){
             bandera=funcion_comer_dama(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+            
+            int coordenada_validaX, coordenada_validaY, coordenada_mover_validaX, coordenada_mover_validaY;
+            
             if(bandera==1){
                 do{
                     imprimir_tablero(tablero);
+                    do{                  
+                        printf("\n");  
+
+            do{
+                do{
+                    coordenada_validaX=-1;
+                    printf("\nIngresa la coordenada 1 [DE 0 A 7]: ");
+                    scanf("%d",&coordenada_validaX);
+                    while (getchar() != '\n');
+                    if(coordenada_validaX==-1){
+                        printf("\nCLAVE INVALIDA!!\n");
+                    }
+                }while(coordenada_validaX<0);
+                
+                coordenadas_fichaX=coordenada_validaX;
+                
+                if(coordenadas_fichaX <  0 || coordenadas_fichaX > 7){
+                    printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                }    
+            }while(coordenadas_fichaX < 0 || coordenadas_fichaX > 7);
+
+            do{
+                do{
+                    coordenada_validaY=-1;
+                    printf("\nIngresa la coordenada 2 [DE 0 A 7]: ");
+                    scanf("%d",&coordenada_validaY);
+                    while (getchar() != '\n');
+                    
+                    if(coordenada_validaY==-1){
+                        printf("\nCLAVE INVALIDA!!\n");
+                    }
+                }while(coordenada_validaY<0);
+                
+                coordenadas_fichaY=coordenada_validaY;
+                
+                if(coordenadas_fichaY < 0 || coordenadas_fichaY > 7){
+                    printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                }
+            }while(coordenadas_fichaY < 0 || coordenadas_fichaY > 7);
+
+                         //fichas mover
+
                     do{
-                        printf("Coordenada ficha 1: ");
-                        scanf("%d", &coordenadas_fichaX);
-                        printf("Coordenada ficha 2: ");
-                        scanf("%d", &coordenadas_fichaY);
-                        printf("Cordenada mover 1: ");
-                        scanf("%d", &coordenadas_moverX);
-                        printf("Cordenada mover 1: ");
-                        scanf("%d", &coordenadas_moverY);
+                            do{
+                                coordenada_mover_validaX=-1;
+                                printf("\nIngresa la coordenada a mover 1 [DE 0 A 7]: ");
+                                scanf("%d",&coordenada_mover_validaX);
+                                while (getchar() != '\n'); 
+                                if(coordenada_mover_validaX==-1){
+                                    printf("\nCLAVE INVALIDA!!\n");
+                                }
+                            }while(coordenada_mover_validaX<0);
+                            
+                            coordenadas_moverX=coordenada_mover_validaX;
+                            
+                            if(coordenadas_moverX < 0 || coordenadas_moverX > 7){
+                                printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                            }
+                        }while(coordenadas_moverX < 0 || coordenadas_moverX > 7);
+                        
+                        do{
+                            do{
+                                coordenada_mover_validaY=-1;
+                                printf("\nIngresa la coordenada a mover 2 [DE 0 A 7]: ");
+                                scanf("%d",&coordenada_mover_validaY);
+                                while (getchar() != '\n'); 
+                                
+                                if(coordenada_mover_validaY==-1){
+                                    printf("\nCLAVE INVALIDA!!\n");
+                                }
+                            }while(coordenada_mover_validaY<0);
+                            
+                            coordenadas_moverY=coordenada_mover_validaY;
+                            
+                            if(coordenadas_moverY < 0 || coordenadas_moverY > 7){
+                    printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                }
+            }while(coordenadas_moverY < 0 || coordenadas_moverY > 7);
+                        
+                            
+
                         bandera=verificacion_casilla_negra(coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY);
                         bandera2=verificacion_movimiento_concatenar(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
                     }while(bandera==0 || bandera2 ==0);
@@ -604,16 +853,84 @@ int movimiento_dama(int turno, int coordenadas_fichaX, int coordenadas_fichaY, i
             bandera=funcion_comer_dama(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
             if(bandera==1){
                 do{
+                    int coordenada_validaX, coordenada_validaY, coordenada_mover_validaX, coordenada_mover_validaY;
                     imprimir_tablero(tablero);
-                    do{
-                        printf("Coordenada ficha 1: ");
-                        scanf("%d", &coordenadas_fichaX);
-                        printf("Coordenada ficha 2: ");
-                        scanf("%d", &coordenadas_fichaY);
-                        printf("Cordenada mover 1: ");
-                        scanf("%d", &coordenadas_moverX);
-                        printf("Cordenada mover 1: ");
-                        scanf("%d", &coordenadas_moverY);
+                    do{     
+                        do{
+                do{
+                    coordenada_validaX=-1;
+                    printf("\nIngresa la coordenada 1 [DE 0 A 7]: ");
+                    scanf("%d",&coordenada_validaX);
+                    while (getchar() != '\n');
+                    if(coordenada_validaX==-1){
+                        printf("\nCLAVE INVALIDA!!\n");
+                    }
+                }while(coordenada_validaX<0);
+                
+                coordenadas_fichaX=coordenada_validaX;
+                
+                if(coordenadas_fichaX <  0 || coordenadas_fichaX > 7){
+                    printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                }    
+            }while(coordenadas_fichaX < 0 || coordenadas_fichaX > 7);
+
+            do{
+                do{
+                    coordenada_validaY=-1;
+                    printf("\nIngresa la coordenada 2 [DE 0 A 7]: ");
+                    scanf("%d",&coordenada_validaY);
+                    while (getchar() != '\n');
+                    
+                    if(coordenada_validaY==-1){
+                        printf("\nCLAVE INVALIDA!!\n");
+                    }
+                }while(coordenada_validaY<0);
+                
+                coordenadas_fichaY=coordenada_validaY;
+                
+                if(coordenadas_fichaY < 0 || coordenadas_fichaY > 7){
+                    printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                }
+            }while(coordenadas_fichaY < 0 || coordenadas_fichaY > 7);
+
+                        //fichas mover
+                        do{
+                            do{
+                                coordenada_mover_validaX=-1;
+                                printf("\nIngresa la coordenada a mover 1 [DE 0 A 7]: ");
+                                scanf("%d",&coordenada_mover_validaX);
+                                while (getchar() != '\n'); 
+                                if(coordenada_mover_validaX==-1){
+                                    printf("\nCLAVE INVALIDA!!\n");
+                                }
+                            }while(coordenada_mover_validaX<0);
+                            
+                            coordenadas_moverX=coordenada_mover_validaX;
+                            
+                            if(coordenadas_moverX < 0 || coordenadas_moverX > 7){
+                                printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                            }
+                        }while(coordenadas_moverX < 0 || coordenadas_moverX > 7);
+                        
+                        do{
+                            do{
+                                coordenada_mover_validaY=-1;
+                                printf("\nIngresa la coordenada a mover 2 [DE 0 A 7]: ");
+                                scanf("%d",&coordenada_mover_validaY);
+                                while (getchar() != '\n'); 
+                                
+                                if(coordenada_mover_validaY==-1){
+                                    printf("\nCLAVE INVALIDA!!\n");
+                                }
+                            }while(coordenada_mover_validaY<0);
+                            
+                            coordenadas_moverY=coordenada_mover_validaY;
+                            
+                            if(coordenadas_moverY < 0 || coordenadas_moverY > 7){
+                                printf("\nOPCION INVALIDA! Vuelvelo a intentar\n");
+                            }
+                        }while(coordenadas_moverY < 0 || coordenadas_moverY > 7);
+
                         bandera=verificacion_casilla_negra(coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY);
                         bandera2=verificacion_movimiento_concatenar(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
                     }while(bandera==0 || bandera2 ==0);
@@ -860,22 +1177,20 @@ int cadenaEsLetraSIoNO(char nombre[]){
 
 int verificar_ganador(int tablero[8][8]) {
     int fichas_p1 = 0, fichas_p2 = 0;
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            if (tablero[i][j] == 'P'){
+    for(int i=0; i<8; i++){
+        for(int j=0; j<8; j++){
+            if(tablero[i][j]==10 || tablero[i][j]==11){
                 fichas_p1++;
-            }
-            if (tablero[i][j] == 'p'){
+            }else if(tablero[i][j]==20 || tablero[i][j]==21){
                 fichas_p2++;
             }
         }
     }
-    
-    if (fichas_p1 == 0){
-        return 2;
+    if(fichas_p1 == 0){
+        return 1; //2 Gano el jugador 2 porque el jugador 1 no tiene fichas
+    }else if(fichas_p2 == 0){
+        return 2; //1 Gano el jugador 1 porque el jugador 2 no tiene fichas
+    }else{
+        return 0;
     }
-    if (fichas_p2 == 0){
-        return 1;
-    }
-    return 0;
 }
