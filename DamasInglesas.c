@@ -13,6 +13,9 @@ int movimiento(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int co
 int movimiento_peon(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]);
 int movimiento_dama(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]);
 int funcion_comer_peon(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]);
+int funcion_comer_dama(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]);
+int concatenar(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]);
+int verificacion_movimiento_concatenar(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]);
 void crear_dama(int tablero[8][8]);
 void imprimir_tablero(int tablero[8][8]);
 void imprimir_linea();
@@ -143,13 +146,35 @@ int movimiento(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int co
     }
 }
 int movimiento_peon(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]){
+    int bandera, bandera2;
     if((turno%2) !=0){
         if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10 && tablero[coordenadas_moverX][coordenadas_moverY] ==0){
             tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
             tablero[coordenadas_moverX][coordenadas_moverY]=10;
             return 1;
         }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10 && tablero[coordenadas_moverX][coordenadas_moverY] ==20 || tablero[coordenadas_moverX][coordenadas_moverY]==21){
-            return funcion_comer_peon(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+            bandera=funcion_comer_peon(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+            if(bandera==1){
+                do{
+                    imprimir_tablero(tablero);
+                    do{
+                        printf("Coordenada ficha 1: ");
+                        scanf("%d", &coordenadas_fichaX);
+                        printf("Coordenada ficha 2: ");
+                        scanf("%d", &coordenadas_fichaY);
+                        printf("Cordenada mover 1: ");
+                        scanf("%d", &coordenadas_moverX);
+                        printf("Cordenada mover 1: ");
+                        scanf("%d", &coordenadas_moverY);
+                        bandera=verificacion_casilla_negra(coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY);
+                        bandera2=verificacion_movimiento_concatenar(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+                    }while(bandera==0 || bandera2 ==0);
+                    bandera2=concatenar(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+                }while(bandera2==1);
+                return 1;
+            }else{
+                return 0;
+            }
         }else{
             return 0;
         }
@@ -159,7 +184,28 @@ int movimiento_peon(int turno, int coordenadas_fichaX, int coordenadas_fichaY, i
             tablero[coordenadas_moverX][coordenadas_moverY]=20;
             return 1;
         }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20 && tablero[coordenadas_moverX][coordenadas_moverY] ==10 || tablero[coordenadas_moverX][coordenadas_moverY]==11){
-            return funcion_comer_peon(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+            bandera=funcion_comer_peon(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+            if(bandera==1){
+                do{
+                    imprimir_tablero(tablero);
+                    do{
+                        printf("Coordenada ficha 1: ");
+                        scanf("%d", &coordenadas_fichaX);
+                        printf("Coordenada ficha 2: ");
+                        scanf("%d", &coordenadas_fichaY);
+                        printf("Cordenada mover 1: ");
+                        scanf("%d", &coordenadas_moverX);
+                        printf("Cordenada mover 1: ");
+                        scanf("%d", &coordenadas_moverY);
+                        bandera=verificacion_casilla_negra(coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY);
+                        bandera2=verificacion_movimiento_concatenar(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+                    }while(bandera==0 || bandera2 ==0);
+                    bandera2=concatenar(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+                }while(bandera2==1);
+                return 1;
+            }else{
+                return 0;
+            }
         }else{
             return 0;
         }
@@ -209,21 +255,242 @@ int funcion_comer_peon(int turno, int coordenadas_fichaX, int coordenadas_fichaY
     }
     return 0;
 }
-
-int movimiento_dama(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]){
-    if((turno%2) !=0){
-        if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11 && tablero[coordenadas_moverX][coordenadas_moverY] !=11){
-            tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
-            tablero[coordenadas_moverX][coordenadas_moverY]=11;
+int funcion_comer_dama(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]){
+    if((turno%2)!=0){
+        if((coordenadas_fichaX-1) == coordenadas_moverX && (coordenadas_fichaY -1)==coordenadas_moverY){
+            if(tablero[coordenadas_moverX-1][coordenadas_moverY-1]==0 && (coordenadas_moverX-1)>=0 && (coordenadas_moverY-1)>=0){
+                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                tablero[coordenadas_moverX-1][coordenadas_moverY-1]=11;
+                return 1;
+            }else{
+                return 0;
+            }
+        }else if((coordenadas_fichaX-1) == coordenadas_moverX && (coordenadas_fichaY +1)==coordenadas_moverY){
+            if(tablero[coordenadas_moverX-1][coordenadas_moverY+1]==0 && (coordenadas_moverX-1)>=0 && (coordenadas_moverY+1)<=7){
+                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                tablero[coordenadas_moverX-1][coordenadas_moverY+1]=11;
+                return 1;
+            }else{
+                return 0;
+            }
+        }else if((coordenadas_fichaX+1) == coordenadas_moverX && (coordenadas_fichaY -1)==coordenadas_moverY){
+            if(tablero[coordenadas_moverX+1][coordenadas_moverY-1]==0 && (coordenadas_moverX+1)<=7 && (coordenadas_moverY-1)>=0){
+                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                tablero[coordenadas_moverX+1][coordenadas_moverY-1]=11;
+                return 1;
+            }else{
+                return 0;
+            }
+        }else if((coordenadas_fichaX+1) == coordenadas_moverX && (coordenadas_fichaY +1)==coordenadas_moverY){
+            if(tablero[coordenadas_moverX+1][coordenadas_moverY+1]==0 && (coordenadas_moverX+1)<=7 && (coordenadas_moverY+1)<=7){
+                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                tablero[coordenadas_moverX+1][coordenadas_moverY+1]=11;
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+    }else{
+        if((coordenadas_fichaX-1) == coordenadas_moverX && (coordenadas_fichaY -1)==coordenadas_moverY){
+            if(tablero[coordenadas_moverX-1][coordenadas_moverY-1]==0 && (coordenadas_moverX-1)>=0 && (coordenadas_moverY-1)>=0){
+                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                tablero[coordenadas_moverX-1][coordenadas_moverY-1]=21;
+                return 1;
+            }else{
+                return 0;
+            }
+        }else if((coordenadas_fichaX-1) == coordenadas_moverX && (coordenadas_fichaY +1)==coordenadas_moverY){
+            if(tablero[coordenadas_moverX-1][coordenadas_moverY+1]==0 && (coordenadas_moverX-1)>=0 && (coordenadas_moverY+1)<=7){
+                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                tablero[coordenadas_moverX-1][coordenadas_moverY+1]=21;
+                return 1;
+            }else{
+                return 0;
+            }
+        }else if((coordenadas_fichaX+1) == coordenadas_moverX && (coordenadas_fichaY -1)==coordenadas_moverY){
+            if(tablero[coordenadas_moverX+1][coordenadas_moverY-1]==0 && (coordenadas_moverX+1)<=7 && (coordenadas_moverY-1)>=0){
+                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                tablero[coordenadas_moverX+1][coordenadas_moverY-1]=21;
+                return 1;
+            }else{
+                return 0;
+            }
+        }else if((coordenadas_fichaX+1) == coordenadas_moverX && (coordenadas_fichaY +1)==coordenadas_moverY){
+            if(tablero[coordenadas_moverX+1][coordenadas_moverY+1]==0 && (coordenadas_moverX+1)<=7 && (coordenadas_moverY+1)<=7){
+                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                tablero[coordenadas_moverX+1][coordenadas_moverY+1]=21;
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+    }
+    return 0;
+}
+int verificacion_movimiento_concatenar(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]){
+    if((turno%2)!=0){
+        if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10 || tablero[coordenadas_fichaX][coordenadas_fichaY]==11 &&(coordenadas_fichaX -1)==coordenadas_moverX && (coordenadas_fichaY-1)==coordenadas_moverY || (coordenadas_fichaX -1)==coordenadas_moverX && (coordenadas_fichaY+1)==coordenadas_moverY || (coordenadas_fichaX +1)==coordenadas_moverX && (coordenadas_fichaY+1)==coordenadas_moverY || (coordenadas_fichaX +1)==coordenadas_moverX && (coordenadas_fichaY-1)==coordenadas_moverY){
             return 1;
         }else{
             return 0;
         }
     }else{
-        if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21 && tablero[coordenadas_moverX][coordenadas_moverY] !=21){
+        if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20 || tablero[coordenadas_fichaX][coordenadas_fichaY]==21 &&(coordenadas_fichaX -1)==coordenadas_moverX && (coordenadas_fichaY-1)==coordenadas_moverY || (coordenadas_fichaX -1)==coordenadas_moverX && (coordenadas_fichaY+1)==coordenadas_moverY || (coordenadas_fichaX +1)==coordenadas_moverX && (coordenadas_fichaY+1)==coordenadas_moverY || (coordenadas_fichaX +1)==coordenadas_moverX && (coordenadas_fichaY-1)==coordenadas_moverY){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+}
+int concatenar(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]){
+    if((coordenadas_fichaX-1) == coordenadas_moverX && (coordenadas_fichaY -1)==coordenadas_moverY){
+            if(tablero[coordenadas_moverX-1][coordenadas_moverY-1]==0 && (coordenadas_moverX-1)>=0 && (coordenadas_moverY-1)>=0){
+                if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10){
+                    tablero[coordenadas_moverX-1][coordenadas_moverY-1]=10;                    
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11){
+                    tablero[coordenadas_moverX-1][coordenadas_moverY-1]=11;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20){
+                    tablero[coordenadas_moverX-1][coordenadas_moverY-1]=20;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21){
+                    tablero[coordenadas_moverX-1][coordenadas_moverY-1]=21;
+                }else{
+                    return 0;
+                }
+                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                return 1;
+            }else{
+                return 0;
+            }
+        }else if((coordenadas_fichaX-1) == coordenadas_moverX && (coordenadas_fichaY +1)==coordenadas_moverY){
+            if(tablero[coordenadas_moverX-1][coordenadas_moverY+1]==0 && (coordenadas_moverX-1)>=0 && (coordenadas_moverY+1)<=7){
+                if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10){
+                    tablero[coordenadas_moverX-1][coordenadas_moverY+1]=10;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11){
+                    tablero[coordenadas_moverX-1][coordenadas_moverY+1]=11;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20){
+                    tablero[coordenadas_moverX-1][coordenadas_moverY+1]=20;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21){
+                    tablero[coordenadas_moverX-1][coordenadas_moverY+1]=21;
+                }else{
+                    return 0;
+                }
+                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                return 1;
+            }else{
+                return 0;
+            }
+        }else if((coordenadas_fichaX+1) == coordenadas_moverX && (coordenadas_fichaY -1)==coordenadas_moverY){
+            if(tablero[coordenadas_moverX+1][coordenadas_moverY-1]==0 && (coordenadas_moverX+1)<=7 && (coordenadas_moverY-1)>=0){
+                if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10){
+                    tablero[coordenadas_moverX+1][coordenadas_moverY-1]=10;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11){
+                    tablero[coordenadas_moverX+1][coordenadas_moverY-1]=11;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20){
+                    tablero[coordenadas_moverX+1][coordenadas_moverY-1]=20;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21){
+                    tablero[coordenadas_moverX+1][coordenadas_moverY-1]=21;
+                }else{
+                    return 0;
+                }
+                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                tablero[coordenadas_moverX][coordenadas_moverY]=0;
+                return 1;
+            }else{
+                return 0;
+            }
+        }else if((coordenadas_fichaX+1) == coordenadas_moverX && (coordenadas_fichaY +1)==coordenadas_moverY){
+            if(tablero[coordenadas_moverX+1][coordenadas_moverY+1]==0 && (coordenadas_moverX+1)<=7 && (coordenadas_moverY+1)<=7){
+                if(tablero[coordenadas_fichaX][coordenadas_fichaY]==10){
+                    tablero[coordenadas_moverX+1][coordenadas_moverY+1]=10;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11){
+                    tablero[coordenadas_moverX+1][coordenadas_moverY+1]=11;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==20){
+                    tablero[coordenadas_moverX+1][coordenadas_moverY+1]=20;
+                }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21){
+                    tablero[coordenadas_moverX+1][coordenadas_moverY+1]=21;
+                }else{
+                    return 0;
+                }
+                tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+                tablero[coordenadas_moverX][coordenadas_moverY]=0; 
+                return 1;               
+            }else{
+                return 0;
+            }
+        }
+    return 0;
+}
+int movimiento_dama(int turno, int coordenadas_fichaX, int coordenadas_fichaY, int coordenadas_moverX, int coordenadas_moverY, int tablero[8][8]){
+    int bandera, bandera2;
+    if((turno%2) !=0){
+        if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11 && tablero[coordenadas_moverX][coordenadas_moverY] ==0){
+            tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
+            tablero[coordenadas_moverX][coordenadas_moverY]=11;
+            return 1;
+        }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==11 && tablero[coordenadas_moverX][coordenadas_moverY] ==20 || tablero[coordenadas_moverX][coordenadas_moverY]==21){
+            bandera=funcion_comer_dama(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+            if(bandera==1){
+                do{
+                    imprimir_tablero(tablero);
+                    do{
+                        printf("Coordenada ficha 1: ");
+                        scanf("%d", &coordenadas_fichaX);
+                        printf("Coordenada ficha 2: ");
+                        scanf("%d", &coordenadas_fichaY);
+                        printf("Cordenada mover 1: ");
+                        scanf("%d", &coordenadas_moverX);
+                        printf("Cordenada mover 1: ");
+                        scanf("%d", &coordenadas_moverY);
+                        bandera=verificacion_casilla_negra(coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY);
+                        bandera2=verificacion_movimiento_concatenar(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+                    }while(bandera==0 || bandera2 ==0);
+                    bandera2=concatenar(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+                }while(bandera2==1);
+                return 1;
+            }else{
+                return 0;
+            }
+        }else{
+            return 0;
+        }
+    }else{
+        if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21 && tablero[coordenadas_moverX][coordenadas_moverY] ==0){
             tablero[coordenadas_fichaX][coordenadas_fichaY]=0;
             tablero[coordenadas_moverX][coordenadas_moverY]=21;
             return 1;
+        }else if(tablero[coordenadas_fichaX][coordenadas_fichaY]==21 && tablero[coordenadas_moverX][coordenadas_moverY] ==10 || tablero[coordenadas_moverX][coordenadas_moverY]==11){
+            bandera=funcion_comer_dama(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+            if(bandera==1){
+                do{
+                    imprimir_tablero(tablero);
+                    do{
+                        printf("Coordenada ficha 1: ");
+                        scanf("%d", &coordenadas_fichaX);
+                        printf("Coordenada ficha 2: ");
+                        scanf("%d", &coordenadas_fichaY);
+                        printf("Cordenada mover 1: ");
+                        scanf("%d", &coordenadas_moverX);
+                        printf("Cordenada mover 1: ");
+                        scanf("%d", &coordenadas_moverY);
+                        bandera=verificacion_casilla_negra(coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY);
+                        bandera2=verificacion_movimiento_concatenar(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+                    }while(bandera==0 || bandera2 ==0);
+                    bandera2=concatenar(turno, coordenadas_fichaX, coordenadas_fichaY, coordenadas_moverX, coordenadas_moverY, tablero);
+                }while(bandera2==1);
+                return 1;
+            }else{
+                return 0;
+            }
         }else{
             return 0;
         }
@@ -239,7 +506,6 @@ void crear_dama(int tablero[8][8]){
         }
     }
 }
-
 void Creditos(){
   printf("\nCreditos\n");
   printf("\nMelissa Rico Aguilar");
