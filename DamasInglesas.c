@@ -17,9 +17,9 @@ void crear_dama(int tablero[8][8]);
 void imprimir_tablero(int tablero[8][8]);
 void imprimir_linea();
 void cambiar_color(int color);
-void kernel_capturas(int x, int y, int kernel[3][3], int tablero[8][8], int turno);
+void kernel_capturas(int coordenadas_fichaX, int coordenadas_fichaY, int kernel[3][3], int tablero[8][8], int turno);
 void imprimir_kernel(int kernel[3][3]);
-void capturar_ficha(int x, int y, int dx, int dy, int tablero[8][8]);
+void capturar_ficha(int coordenadas_fichaX, int coordenadas_fichaY, int dx, int dy, int tablero[8][8]);
 
 int main() {
   int opcion;
@@ -434,7 +434,7 @@ void cambiar_color(int color){
 }
 
 
-void kernel_capturas(int x, int y, int kernel[3][3], int tablero[8][8], int turno) {
+void kernel_capturas(int coordenadas_fichaX, int coordenadas_fichaY, int kernel[3][3], int tablero[8][8], int turno) {
     int rival;
     int aliado;
     if (turno % 2 != 0) {
@@ -447,8 +447,8 @@ void kernel_capturas(int x, int y, int kernel[3][3], int tablero[8][8], int turn
 
     for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
-            int nx = x + i;
-            int ny = y + j;
+            int nx = coordenadas_fichaX + i;
+            int ny = coordenadas_fichaY + j;
 
             if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8) {
                 if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8) {
@@ -489,50 +489,50 @@ void imprimir_kernel(int kernel[3][3]){
         printf("\n");
     }
 }
-void capturar_ficha(int x, int y, int dx, int dy, int tablero[8][8]) {
+void capturar_ficha(int coordenadas_fichaX, int coordenadas_fichaY, int dx, int dy, int tablero[8][8]) {
     // Variables de posición de las fichas
     int rivalX, rivalY, destinoX, destinoY;
-    
+
     // Primer chequeo: si la ficha rival está en la dirección arriba a la derecha o abajo a la izquierda
     if (dx == -2 && dy == 2) {  // Ficha rival posible arriba a la derecha o abajo a la izquierda
-        rivalX = x - 1;  // Ficha rival podría estar arriba a la derecha
-        rivalY = y + 1; 
-        destinoX = x - 2; 
-        destinoY = y + 2;
+        rivalX = coordenadas_fichaX - 1;  // Ficha rival podría estar arriba a la derecha
+        rivalY = coordenadas_fichaY + 1; 
+        destinoX = coordenadas_fichaX - 2; 
+        destinoY = coordenadas_fichaY + 2;
 
 
-        // Verificar que la casilla de destino esté vacía y que haya una ficha rival
+        // Verificar que la casilla de destino esté vacía coordenadas_fichaY que haya una ficha rival
         if (destinoX >= 0 && destinoX < 8 && destinoY >= 0 && destinoY < 8) {
             if (tablero[destinoX][destinoY] == 0 && tablero[rivalX][rivalY] != 0) {
                 // Realizar la captura
                 // Mostrar las coordenadas para depuración
-                printf("Posición inicial: (%d, %d)\n", x, y);
+                printf("Posición inicial: (%d, %d)\n", coordenadas_fichaX, coordenadas_fichaY);
                 printf("Ficha rival en: (%d, %d)\n", rivalX, rivalY);
                 printf("Destino de la ficha: (%d, %d)\n", destinoX, destinoY);
-                printf("Captura realizada en (%d, %d) y movimiento a (%d, %d)\n", rivalX, rivalY, destinoX, destinoY);
-                tablero[destinoX][destinoY] = tablero[x][y];
-                tablero[x][y] = 0;
+                printf("Captura realizada en (%d, %d) coordenadas_fichaY movimiento a (%d, %d)\n", rivalX, rivalY, destinoX, destinoY);
+                tablero[destinoX][destinoY] = tablero[coordenadas_fichaX][coordenadas_fichaY];
+                tablero[coordenadas_fichaX][coordenadas_fichaY] = 0;
                 tablero[rivalX][rivalY] = 0;
                 return;  // Terminamos después de una captura exitosa
             }
         }
 
         // Si no es válida, intentamos la otra dirección: abajo a la izquierda
-        rivalX = x + 1;
-        rivalY = y - 1;
-        destinoX = x + 2;
-        destinoY = y - 2;
+        rivalX = coordenadas_fichaX + 1;
+        rivalY = coordenadas_fichaY - 1;
+        destinoX = coordenadas_fichaX + 2;
+        destinoY = coordenadas_fichaY - 2;
 
         if (destinoX >= 0 && destinoX < 8 && destinoY >= 0 && destinoY < 8) {
             if (tablero[destinoX][destinoY] == 0 && tablero[rivalX][rivalY] != 0) {
                 // Realizar la captura
                 // Mostrar las coordenadas para depuración
-                printf("Posición inicial: (%d, %d)\n", x, y);
+                printf("Posición inicial: (%d, %d)\n", coordenadas_fichaX, coordenadas_fichaY);
                 printf("Ficha rival en: (%d, %d)\n", rivalX, rivalY);
                 printf("Destino de la ficha: (%d, %d)\n", destinoX, destinoY);
-                printf("Captura realizada en (%d, %d) y movimiento a (%d, %d)\n", rivalX, rivalY, destinoX, destinoY);
-                tablero[destinoX][destinoY] = tablero[x][y];
-                tablero[x][y] = 0;
+                printf("Captura realizada en (%d, %d) coordenadas_fichaY movimiento a (%d, %d)\n", rivalX, rivalY, destinoX, destinoY);
+                tablero[destinoX][destinoY] = tablero[coordenadas_fichaX][coordenadas_fichaY];
+                tablero[coordenadas_fichaX][coordenadas_fichaY] = 0;
                 tablero[rivalX][rivalY] = 0;
                 return;  // Terminamos después de una captura exitosa
             }
@@ -541,43 +541,43 @@ void capturar_ficha(int x, int y, int dx, int dy, int tablero[8][8]) {
 
     // Segundo chequeo: si la ficha rival está en la dirección arriba a la izquierda o abajo a la derecha
     else if (dx == -2 && dy == -2) {  // Ficha rival posible arriba a la izquierda o abajo a la derecha
-        rivalX = x - 1;  // Ficha rival podría estar arriba a la izquierda
-        rivalY = y - 1;
-        destinoX = x - 2;
-        destinoY = y - 2;
+        rivalX = coordenadas_fichaX - 1;  // Ficha rival podría estar arriba a la izquierda
+        rivalY = coordenadas_fichaY - 1;
+        destinoX = coordenadas_fichaX - 2;
+        destinoY = coordenadas_fichaY - 2;
 
-        // Verificar que la casilla de destino esté vacía y que haya una ficha rival
+        // Verificar que la casilla de destino esté vacía coordenadas_fichaY que haya una ficha rival
         if (destinoX >= 0 && destinoX < 8 && destinoY >= 0 && destinoY < 8) {
             if (tablero[destinoX][destinoY] == 0 && tablero[rivalX][rivalY] != 0) {
                 // Realizar la captura
                 // Mostrar las coordenadas para depuración
-                printf("Posición inicial: (%d, %d)\n", x, y);
+                printf("Posición inicial: (%d, %d)\n", coordenadas_fichaX, coordenadas_fichaY);
                 printf("Ficha rival en: (%d, %d)\n", rivalX, rivalY);
                 printf("Destino de la ficha: (%d, %d)\n", destinoX, destinoY);
-                printf("Captura realizada en (%d, %d) y movimiento a (%d, %d)\n", rivalX, rivalY, destinoX, destinoY);
-                tablero[destinoX][destinoY] = tablero[x][y];
-                tablero[x][y] = 0;
+                printf("Captura realizada en (%d, %d) coordenadas_fichaY movimiento a (%d, %d)\n", rivalX, rivalY, destinoX, destinoY);
+                tablero[destinoX][destinoY] = tablero[coordenadas_fichaX][coordenadas_fichaY];
+                tablero[coordenadas_fichaX][coordenadas_fichaY] = 0;
                 tablero[rivalX][rivalY] = 0;
                 return;  // Terminamos después de una captura exitosa
             }
         }
 
         // Si no es válida, intentamos la otra dirección: abajo a la derecha
-        rivalX = x + 1;
-        rivalY = y + 1;
-        destinoX = x + 2;
-        destinoY = y + 2;
+        rivalX = coordenadas_fichaX + 1;
+        rivalY = coordenadas_fichaY + 1;
+        destinoX = coordenadas_fichaX + 2;
+        destinoY = coordenadas_fichaY + 2;
 
         if (destinoX >= 0 && destinoX < 8 && destinoY >= 0 && destinoY < 8) {
             if (tablero[destinoX][destinoY] == 0 && tablero[rivalX][rivalY] != 0) {
                 // Realizar la captura
                 // Mostrar las coordenadas para depuración
-                printf("Posición inicial: (%d, %d)\n", x, y);
+                printf("Posición inicial: (%d, %d)\n", coordenadas_fichaX, coordenadas_fichaY);
                 printf("Ficha rival en: (%d, %d)\n", rivalX, rivalY);
                 printf("Destino de la ficha: (%d, %d)\n", destinoX, destinoY);
-                printf("Captura realizada en (%d, %d) y movimiento a (%d, %d)\n", rivalX, rivalY, destinoX, destinoY);
-                tablero[destinoX][destinoY] = tablero[x][y];
-                tablero[x][y] = 0;
+                printf("Captura realizada en (%d, %d) coordenadas_fichaY movimiento a (%d, %d)\n", rivalX, rivalY, destinoX, destinoY);
+                tablero[destinoX][destinoY] = tablero[coordenadas_fichaX][coordenadas_fichaY];
+                tablero[coordenadas_fichaX][coordenadas_fichaY] = 0;
                 tablero[rivalX][rivalY] = 0;
                 return;  // Terminamos después de una captura exitosa
             }
@@ -587,4 +587,3 @@ void capturar_ficha(int x, int y, int dx, int dy, int tablero[8][8]) {
     // Si no encontramos ninguna ficha rival en las direcciones posibles
     printf("Movimiento no válido: No hay ficha rival en las casillas adyacentes para capturar.\n");
 }
-
